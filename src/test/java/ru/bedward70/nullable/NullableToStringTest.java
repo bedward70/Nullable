@@ -25,7 +25,8 @@ package ru.bedward70.nullable;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * ToString test cases for {@link Nullable}.
@@ -35,15 +36,13 @@ import org.junit.jupiter.api.Test;
  */
 public final class NullableToStringTest {
 
-    @Test
-    public void testToString() {
-        dataProvider().forEach(
-            kit ->
-                Assertions.assertEquals(
-                    kit.getExpected(),
-                    new Nullable(kit.getValue()).toString(),
-                    "Testing : " + kit
-                )
+    @ParameterizedTest
+    @MethodSource("dataProvider")
+    public void test(final NullableToStringTestData kit) {
+        Assertions.assertEquals(
+            kit.getExpected(),
+            new Nullable(kit.getValue()).toString(),
+            "Testing : " + kit
         );
     }
 
