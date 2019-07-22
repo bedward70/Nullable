@@ -28,145 +28,140 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Filter test cases for {@link Nullable}.
+ * Map test cases for {@link Nullable}.
  * @since 0.01
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle LocalFinalVariableNameCheck (500 lines)
  */
-public final class NullableFilterTest {
+public final class NullableMapTest {
 
     @Test
     public void testForNullCount() {
         final Nullable<String> n = new Nullable<>(null);
-        final AtomicInteger countUsePredicate = new AtomicInteger();
-        n.filter(
+        final AtomicInteger countUseMap = new AtomicInteger();
+        n.map(
             value -> {
-                countUsePredicate.incrementAndGet();
+                countUseMap.incrementAndGet();
                 return false;
             }
         );
         Assertions.assertEquals(
             0,
-            countUsePredicate.get(),
+            countUseMap.get(),
             "Testing count for null case"
         );
     }
 
     @Test
-    public void testForNonNullCount() {
-        final String string = "value for count";
+    public void testForNonNullToNonNull() {
+        final String string = "value to non-null";
         final Nullable<String> n = new Nullable<>(string);
-        final AtomicInteger countUsePredicate = new AtomicInteger();
-        n.filter(
+        final AtomicInteger countUseMap = new AtomicInteger();
+        final String expected = "expected";
+        final Nullable<String> result = n.map(
             value -> {
-                countUsePredicate.incrementAndGet();
+                countUseMap.incrementAndGet();
                 Assertions.assertEquals(
                     string,
                     value,
-                    "Test executing  value"
+                    "Test executing  value to non-null"
                 );
-                return false;
+                return expected;
             }
         );
         Assertions.assertEquals(
             1,
-            countUsePredicate.get(),
+            countUseMap.get(),
             "Testing count for non-null case"
         );
-    }
-
-    @Test
-    public void testForNullTrue() {
-        final Nullable<String> n = new Nullable<>(null);
-        Assertions.assertFalse(
-            n.filter(value -> true).isPresent(),
-            "Testing true filter for null case"
-        );
-    }
-
-    @Test
-    public void testForNullFalse() {
-        final Nullable<String> n = new Nullable<>(null);
-        Assertions.assertFalse(
-            n.filter(value -> false).isPresent(),
-            "Testing false filter for null case"
-        );
-    }
-
-    @Test
-    public void testForNullAlternativeTrue() {
-        final Nullable<String> n = new Nullable<>(null);
-        final AtomicInteger countUseElse = new AtomicInteger();
-        n.filter(value -> true, value -> countUseElse.incrementAndGet());
         Assertions.assertEquals(
-            0,
-            countUseElse.get(),
-            "Testing true filter and consumer for null case"
+            expected,
+            result.get(),
+            "Testing result for non-null case"
         );
-    }
-
-    @Test
-    public void testForNullAlternativeFalse() {
-        final Nullable<String> n = new Nullable<>(null);
-        final AtomicInteger countUseElse = new AtomicInteger();
-        n.filter(value -> false, value -> countUseElse.incrementAndGet());
-        Assertions.assertEquals(
-            0,
-            countUseElse.get(),
-            "Testing false filter and consumer for null case"
-        );
-    }
-
-    @Test
-    public void testForNonNullTrue() {
-        final Nullable<String> n = new Nullable<>("value for true case");
         Assertions.assertTrue(
-            n.filter(value -> true).isPresent(),
-            "Testing true filter for non-null case"
+            result.isPresent(),
+            "Testing isPresent for non-null case"
         );
     }
 
     @Test
-    public void testForNonNullFalse() {
-        final Nullable<String> n = new Nullable<>("value for false case");
+    public void testForNonNulltoNull() {
+        final String string = "value to null";
+        final Nullable<String> n = new Nullable<>(string);
+        final AtomicInteger countUseMap = new AtomicInteger();
+        final Nullable<String> result = n.map(
+            value -> {
+                countUseMap.incrementAndGet();
+                Assertions.assertEquals(
+                    string,
+                    value,
+                    "Test executing non-null value to null"
+                );
+                return null;
+            }
+        );
+        Assertions.assertEquals(
+            1,
+            countUseMap.get(),
+            "Testing count to null case"
+        );
+        Assertions.assertNull(
+            result.get(),
+            "Testing result for non case"
+        );
         Assertions.assertFalse(
-            n.filter(value -> false).isPresent(),
-            "Testing false filter for non-null case"
+            result.isPresent(),
+            "Testing isPresent for null case"
         );
     }
 
     @Test
-    public void testForNonNullAlternativeTrue() {
-        final Nullable<String> n = new Nullable<>("value for true alternative case");
+    public void testForNullAlternative() {
+        final Nullable<String> n = new Nullable<>(null);
         final AtomicInteger countUseElse = new AtomicInteger();
-        n.filter(value -> true, value -> countUseElse.incrementAndGet());
+        n.map(value -> true, value -> countUseElse.incrementAndGet());
         Assertions.assertEquals(
             0,
             countUseElse.get(),
-            "Testing true filter and consumer for non-null case"
+            "Testing true map and consumer for null case"
         );
     }
 
     @Test
-    public void testForNonNullAlternativeFalse() {
-        final String string = "value for false alternative case";
+    public void testForNonNullAlternativeNonNull() {
+        final Nullable<String> n = new Nullable<>("value for non-null alternative case");
+        final AtomicInteger countUseElse = new AtomicInteger();
+        n.map(value -> true, value -> countUseElse.incrementAndGet());
+        Assertions.assertEquals(
+            0,
+            countUseElse.get(),
+            "Testing true map and consumer for non-null case"
+        );
+    }
+
+    @Test
+    public void testForNonNullAlternativeNull() {
+        final String string = "value for null alternative case";
         final Nullable<String> n = new Nullable<>(string);
         final AtomicInteger countUseElse = new AtomicInteger();
-        n.filter(
-            value -> false,
+        n.map(
+            value -> {
+                return (Boolean) null;
+            },
             value -> {
                 countUseElse.incrementAndGet();
                 Assertions.assertEquals(
                     string,
                     value,
-                    "Test executing  value to null"
+                    "Test executing value to null"
                 );
             }
         );
         Assertions.assertEquals(
             1,
             countUseElse.get(),
-            "Testing false filter and consumer for non-null case"
+            "Testing false map and consumer for non-null case"
         );
     }
 }

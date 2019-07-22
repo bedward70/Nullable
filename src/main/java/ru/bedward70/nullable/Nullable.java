@@ -175,7 +175,7 @@ public class Nullable<X> {
      * @return The {@code Nullable} current container.
      * @throws NullPointerException If value is present and the consumer is null.
      */
-    public Nullable<X> map(final Consumer<? super X> consumer) {
+    public Nullable<X> ifPresent(final Consumer<? super X> consumer) {
         if (this.isPresent()) {
             consumer.accept(this.value);
         }

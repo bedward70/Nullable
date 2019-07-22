@@ -23,53 +23,32 @@
  */
 package ru.bedward70.nullable;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * IfPresent test cases for {@link Nullable}.
+ * IsPresent test cases for {@link Nullable}.
  * @since 0.01
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle LocalFinalVariableNameCheck (500 lines)
  */
-public final class NullableIfPresentTest {
+public final class NullableIsPresentTest {
 
     @Test
     public void testForNull() {
         final Nullable<String> n = new Nullable<>(null);
-        final AtomicInteger countUsePredicate = new AtomicInteger();
-        n.ifPresent(
-            value -> {
-                countUsePredicate.incrementAndGet();
-            }
-        );
-        Assertions.assertEquals(
-            0,
-            countUsePredicate.get(),
-            "Testing count for null case"
+        Assertions.assertFalse(
+            n.isPresent(),
+            "Testing null"
         );
     }
 
     @Test
     public void testForNonNull() {
-        final String string = "value for count";
-        final Nullable<String> n = new Nullable<>(string);
-        final AtomicInteger countUsePredicate = new AtomicInteger();
-        n.ifPresent(
-            value -> {
-                countUsePredicate.incrementAndGet();
-                Assertions.assertEquals(
-                    string,
-                    value,
-                    "Test executing  value"
-                );
-            }
-        );
-        Assertions.assertEquals(
-            1,
-            countUsePredicate.get(),
-            "Testing count for non-null case"
+        final Nullable<String> n = new Nullable<>("value");
+        Assertions.assertTrue(
+            n.isPresent(),
+            "Testing non-null"
         );
     }
 }
