@@ -121,7 +121,7 @@ public class Nullable<X> {
         final Consumer<? super X> consumer
     ) {
         final Nullable<X> result;
-        if (!this.isPresent() && predicate.test(this.value)) {
+        if (!this.isPresent() || predicate.test(this.value)) {
             result = this;
         } else {
             result = new Nullable<>(null);
