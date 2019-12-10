@@ -24,60 +24,39 @@
 package ru.bedward70.nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * MapOrGet test cases for {@link Nullable}.
+ * IfNotPresent test cases for {@link Nullable}.
  * @since 0.01
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle LocalFinalVariableNameCheck (500 lines)
  */
-public final class NullableMapOrGetTest {
+public final class NullableIfNotPresentTest {
 
     @Test
-    public void testForNullAlternative() {
-        final String alternativeString = "Alternative NullAlternative";
-        final AtomicInteger countUseElse = new AtomicInteger();
-        final Supplier<String> supplier = () -> {
-            countUseElse.incrementAndGet();
-            return alternativeString;
-        };
+    public void testForNull() {
         final Nullable<String> n = new Nullable<>(null);
-        final Nullable<String> result = n.mapOrGet(supplier);
+        final AtomicInteger countUsePredicate = new AtomicInteger();
+        n.ifNotPresent(countUsePredicate::incrementAndGet);
         Assertions.assertEquals(
             1,
-            countUseElse.get(),
-            "Testing true map and consumer for null alternative"
-        );
-        Assertions.assertEquals(
-            alternativeString,
-            result.get(),
-            "Testing result for non alternative"
+            countUsePredicate.get(),
+            "Testing count for null case"
         );
     }
 
     @Test
-    public void testForNonNullAlternative() {
-        final String original = "Original NonNullAlternative";
-        final String alternativeString = "Alternative NonNullAlternative";
-        final AtomicInteger countUseElse = new AtomicInteger();
-        final Supplier<String> supplier = () -> {
-            countUseElse.incrementAndGet();
-            return alternativeString;
-        };
-        final Nullable<String> n = new Nullable<>(original);
-        final Nullable<String> result = n.mapOrGet(supplier);
+    public void testForNonNull() {
+        final String string = "value for count";
+        final Nullable<String> n = new Nullable<>(string);
+        final AtomicInteger countUsePredicate = new AtomicInteger();
+        n.ifNotPresent(countUsePredicate::incrementAndGet);
         Assertions.assertEquals(
             0,
-            countUseElse.get(),
-            "Testing true map and consumer for non-null case"
-        );
-        Assertions.assertEquals(
-            original,
-            result.get(),
-            "Testing result for non-null case"
+            countUsePredicate.get(),
+            "Testing count for non-null case"
         );
     }
 }

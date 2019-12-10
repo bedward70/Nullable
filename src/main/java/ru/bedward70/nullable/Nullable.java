@@ -161,6 +161,19 @@ public class Nullable<X> {
     }
 
     /**
+     * If a value is null, performs the runnable,
+     * otherwise does nothing.
+     * @param runnable The Runnable to be performed, if a value is not present.
+     * @return The {@code Nullable} current container.
+     */
+    public Nullable<X> ifNotPresent(final Runnable runnable) {
+        if (!this.isPresent()) {
+            runnable.run();
+        }
+        return this;
+    }
+
+    /**
      * If a value is present, returns a sequential Stream containing only that value,
      * otherwise returns an empty Stream.
      * @return The optional value as a Stream
