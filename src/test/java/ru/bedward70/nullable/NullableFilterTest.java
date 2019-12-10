@@ -94,30 +94,6 @@ public final class NullableFilterTest {
     }
 
     @Test
-    public void testForNullAlternativeTrue() {
-        final Nullable<String> n = new Nullable<>(null);
-        final AtomicInteger countUseElse = new AtomicInteger();
-        n.filter(value -> true, value -> countUseElse.incrementAndGet());
-        Assertions.assertEquals(
-            0,
-            countUseElse.get(),
-            "Testing true filter and consumer for null case"
-        );
-    }
-
-    @Test
-    public void testForNullAlternativeFalse() {
-        final Nullable<String> n = new Nullable<>(null);
-        final AtomicInteger countUseElse = new AtomicInteger();
-        n.filter(value -> false, value -> countUseElse.incrementAndGet());
-        Assertions.assertEquals(
-            0,
-            countUseElse.get(),
-            "Testing false filter and consumer for null case"
-        );
-    }
-
-    @Test
     public void testForNonNullTrue() {
         final Nullable<String> n = new Nullable<>("value for true case");
         Assertions.assertTrue(
@@ -132,41 +108,6 @@ public final class NullableFilterTest {
         Assertions.assertFalse(
             n.filter(value -> false).isPresent(),
             "Testing false filter for non-null case"
-        );
-    }
-
-    @Test
-    public void testForNonNullAlternativeTrue() {
-        final Nullable<String> n = new Nullable<>("value for true alternative case");
-        final AtomicInteger countUseElse = new AtomicInteger();
-        n.filter(value -> true, value -> countUseElse.incrementAndGet());
-        Assertions.assertEquals(
-            0,
-            countUseElse.get(),
-            "Testing true filter and consumer for non-null case"
-        );
-    }
-
-    @Test
-    public void testForNonNullAlternativeFalse() {
-        final String string = "value for false alternative case";
-        final Nullable<String> n = new Nullable<>(string);
-        final AtomicInteger countUseElse = new AtomicInteger();
-        n.filter(
-            value -> false,
-            value -> {
-                countUseElse.incrementAndGet();
-                Assertions.assertEquals(
-                    string,
-                    value,
-                    "Test executing  value to null"
-                );
-            }
-        );
-        Assertions.assertEquals(
-            1,
-            countUseElse.get(),
-            "Testing false filter and consumer for non-null case"
         );
     }
 }

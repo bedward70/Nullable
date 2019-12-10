@@ -103,31 +103,11 @@ public class Nullable<X> {
      * @throws NullPointerException If value is present and the predicate is null.
      */
     public Nullable<X> filter(final Predicate<? super X> predicate) {
-        return this.filter(predicate, null);
-    }
-
-    /**
-     * If a value is present, and the value matches the given predicate,
-     * returns the original container, otherwise returns an
-     * null {@code Nullable}.
-     * @param predicate The predicate to apply to a value.
-     * @param consumer If the value does not match the given predicate then the consumer
-     *  to be performed for the current value.
-     * @return The original container, otherwise returns an null {@code Nullable}.
-     * @throws NullPointerException If value is present and the predicate is null.
-     */
-    public Nullable<X> filter(
-        final Predicate<? super X> predicate,
-        final Consumer<? super X> consumer
-    ) {
         final Nullable<X> result;
         if (!this.isPresent() || predicate.test(this.value)) {
             result = this;
         } else {
             result = new Nullable<>(null);
-        }
-        if (this.isPresent() != result.isPresent() && consumer != null) {
-            consumer.accept(this.value);
         }
         return result;
     }
@@ -140,30 +120,28 @@ public class Nullable<X> {
      * @throws NullPointerException If value is present and the mapping function is null.
      */
     public <Y> Nullable<Y> map(final Function<? super X, ? extends Y> mapper) {
-        return this.map(mapper, null);
-    }
-
-    /**
-     * If a value is non-null, returns the result of applying the given mapping function.
-     * @param mapper The mapping function to apply to a value.
-     * @param consumer If a result value is null then the consumer to be performed for
-     *  the original value.
-     * @param <Y> The type of the value returned.
-     * @return An {@code Nullable} container with the result or the casted current container.
-     * @throws NullPointerException If value is present and the mapping function is null.
-     */
-    public <Y> Nullable<Y> map(
-        final Function<? super X, ? extends Y> mapper,
-        final Consumer<? super X> consumer
-    ) {
         final Nullable<Y> result;
         if (this.isPresent()) {
             result = new Nullable<>(mapper.apply(this.value));
         } else {
             result = (Nullable<Y>) this;
         }
-        if (this.isPresent() != result.isPresent() && consumer != null) {
-            consumer.accept(this.value);
+        return result;
+    }
+
+    /**
+     * If a value is null, returns the result by supplier.
+     * @param supplier A supplier of a default value.
+     * @return An {@code Nullable} container with the result or the casted current container.
+     */
+    public Nullable<X> mapOrGet(
+        final Supplier<? extends X> supplier
+    ) {
+        final Nullable<X> result;
+        if (this.isPresent()) {
+            result = this;
+        } else {
+            result = new Nullable<>(supplier.get());
         }
         return result;
     }
